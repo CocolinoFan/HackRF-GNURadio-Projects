@@ -5,7 +5,7 @@ options:
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
-    copyright: ''
+    copyright: GNU General Public License (GPL)
     description: Change "chanel_freq" to the FM station frequency you want to listen
       to
     gen_cmake: 'On'
