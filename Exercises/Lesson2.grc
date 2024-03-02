@@ -5,13 +5,13 @@ options:
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
-    copyright: ''
-    description: ''
+    copyright: GNU General Public License
+    description: https://youtu.be/m0GGBFBWFfU
     gen_cmake: 'On'
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: FM_Transmitter
+    id: default
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -22,7 +22,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: FM_Transmitter
+    title: Simple AM RX
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -33,19 +33,86 @@ options:
     state: enabled
 
 blocks:
-- name: freq
-  id: variable
+- name: af_gain
+  id: variable_qtgui_range
   parameters:
     comment: ''
-    value: 145.4125e6
+    gui_hint: ''
+    label: Volume
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '5'
+    value: '1'
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 12.0]
+    coordinate: [1192, 284.0]
     rotation: 0
     state: enabled
-- name: rf_tx_gain
+- name: freq
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    entry_signal: editingFinished
+    gui_hint: ''
+    label: Frequnecy
+    type: real
+    value: offset_coarse+offset_fine
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 556.0]
+    rotation: 0
+    state: enabled
+- name: offset_coarse
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Coarse Tune
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: 1e6
+    step: '500'
+    stop: 20e6
+    value: 1e6
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [248, 636.0]
+    rotation: 0
+    state: enabled
+- name: offset_fine
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Fine tune
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: -1e3
+    step: '1'
+    stop: 1e3
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 636.0]
+    rotation: 0
+    state: enabled
+- name: rf_gain
   id: variable_qtgui_range
   parameters:
     comment: ''
@@ -56,74 +123,114 @@ blocks:
     rangeType: float
     start: '0'
     step: '1'
-    stop: '47'
-    value: '10'
+    stop: '100'
+    value: '75'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 92.0]
+    coordinate: [144, 556.0]
     rotation: 0
     state: enabled
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: int(48e3)
+    value: 2.048e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
+    coordinate: [176, 12.0]
     rotation: 0
     state: enabled
-- name: analog_nbfm_tx_0
-  id: analog_nbfm_tx
+- name: width
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Filter
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: 2e3
+    step: '1'
+    stop: 40e3
+    value: 10e3
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [264, 12.0]
+    rotation: 0
+    state: enabled
+- name: analog_agc3_xx_0
+  id: analog_agc3_xx
   parameters:
     affinity: ''
     alias: ''
-    audio_rate: int(samp_rate/6)
+    attack_rate: '0.1'
     comment: ''
-    fh: '-1.0'
-    max_dev: 5e3
+    decay_rate: '0.01'
+    gain: '1.0'
+    iir_update_decim: '1'
+    max_gain: '65536'
     maxoutbuf: '0'
     minoutbuf: '0'
-    quad_rate: int(samp_rate/6*2)
-    tau: 75e-6
+    reference: '0.7'
+    type: complex
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [600, 260.0]
+    coordinate: [848, 380.0]
     rotation: 0
     state: enabled
-- name: audio_source_0
-  id: audio_source
+- name: analog_am_demod_cf_0
+  id: analog_am_demod_cf
+  parameters:
+    affinity: ''
+    alias: ''
+    audio_decim: '1'
+    audio_pass: '5000'
+    audio_stop: '5500'
+    chan_rate: 48e3
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1040, 396.0]
+    rotation: 0
+    state: enabled
+- name: audio_sink_0
+  id: audio_sink
   parameters:
     affinity: ''
     alias: ''
     comment: ''
     device_name: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_outputs: '1'
+    num_inputs: '1'
     ok_to_block: 'True'
-    samp_rate: samp_rate
+    samp_rate: '48000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 220.0]
+    coordinate: [1336, 420.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    const: '1'
+    const: af_gain
     maxoutbuf: '0'
     minoutbuf: '0'
     type: float
@@ -132,25 +239,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [240, 292.0]
-    rotation: 0
-    state: enabled
-- name: blocks_wavfile_source_0
-  id: blocks_wavfile_source
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    file: /home/cocolino/GetFree.mp3
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    nchan: '1'
-    repeat: 'True'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 324.0]
+    coordinate: [1192, 420.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -160,25 +249,25 @@ blocks:
     alias: ''
     beta: '6.76'
     comment: ''
-    cutoff_freq: 12e3
-    decim: '6'
+    cutoff_freq: 5e3
+    decim: '32'
     gain: '1'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    type: fir_filter_fff
-    width: '100'
+    type: fir_filter_ccf
+    width: 1.5e3
     win: window.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 244.0]
+    coordinate: [472, 372.0]
     rotation: 0
     state: enabled
-- name: osmosdr_sink_0
-  id: osmosdr_sink
+- name: osmosdr_source_0
+  id: osmosdr_source
   parameters:
     affinity: ''
     alias: ''
@@ -215,7 +304,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: '""'
-    bb_gain0: '20'
+    bb_gain0: '10'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -247,7 +336,7 @@ blocks:
     bb_gain7: '20'
     bb_gain8: '20'
     bb_gain9: '20'
-    bw0: '0'
+    bw0: 20e6
     bw1: '0'
     bw10: '0'
     bw11: '0'
@@ -320,6 +409,38 @@ blocks:
     corr7: '0'
     corr8: '0'
     corr9: '0'
+    dc_offset_mode0: '0'
+    dc_offset_mode1: '0'
+    dc_offset_mode10: '0'
+    dc_offset_mode11: '0'
+    dc_offset_mode12: '0'
+    dc_offset_mode13: '0'
+    dc_offset_mode14: '0'
+    dc_offset_mode15: '0'
+    dc_offset_mode16: '0'
+    dc_offset_mode17: '0'
+    dc_offset_mode18: '0'
+    dc_offset_mode19: '0'
+    dc_offset_mode2: '0'
+    dc_offset_mode20: '0'
+    dc_offset_mode21: '0'
+    dc_offset_mode22: '0'
+    dc_offset_mode23: '0'
+    dc_offset_mode24: '0'
+    dc_offset_mode25: '0'
+    dc_offset_mode26: '0'
+    dc_offset_mode27: '0'
+    dc_offset_mode28: '0'
+    dc_offset_mode29: '0'
+    dc_offset_mode3: '0'
+    dc_offset_mode30: '0'
+    dc_offset_mode31: '0'
+    dc_offset_mode4: '0'
+    dc_offset_mode5: '0'
+    dc_offset_mode6: '0'
+    dc_offset_mode7: '0'
+    dc_offset_mode8: '0'
+    dc_offset_mode9: '0'
     freq0: freq
     freq1: 100e6
     freq10: 100e6
@@ -352,7 +473,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '20'
+    gain0: rf_gain
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -384,7 +505,39 @@ blocks:
     gain7: '10'
     gain8: '10'
     gain9: '10'
-    if_gain0: rf_tx_gain
+    gain_mode0: 'False'
+    gain_mode1: 'False'
+    gain_mode10: 'False'
+    gain_mode11: 'False'
+    gain_mode12: 'False'
+    gain_mode13: 'False'
+    gain_mode14: 'False'
+    gain_mode15: 'False'
+    gain_mode16: 'False'
+    gain_mode17: 'False'
+    gain_mode18: 'False'
+    gain_mode19: 'False'
+    gain_mode2: 'False'
+    gain_mode20: 'False'
+    gain_mode21: 'False'
+    gain_mode22: 'False'
+    gain_mode23: 'False'
+    gain_mode24: 'False'
+    gain_mode25: 'False'
+    gain_mode26: 'False'
+    gain_mode27: 'False'
+    gain_mode28: 'False'
+    gain_mode29: 'False'
+    gain_mode3: 'False'
+    gain_mode30: 'False'
+    gain_mode31: 'False'
+    gain_mode4: 'False'
+    gain_mode5: 'False'
+    gain_mode6: 'False'
+    gain_mode7: 'False'
+    gain_mode8: 'False'
+    gain_mode9: 'False'
+    if_gain0: '10'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -416,6 +569,38 @@ blocks:
     if_gain7: '20'
     if_gain8: '20'
     if_gain9: '20'
+    iq_balance_mode0: '0'
+    iq_balance_mode1: '0'
+    iq_balance_mode10: '0'
+    iq_balance_mode11: '0'
+    iq_balance_mode12: '0'
+    iq_balance_mode13: '0'
+    iq_balance_mode14: '0'
+    iq_balance_mode15: '0'
+    iq_balance_mode16: '0'
+    iq_balance_mode17: '0'
+    iq_balance_mode18: '0'
+    iq_balance_mode19: '0'
+    iq_balance_mode2: '0'
+    iq_balance_mode20: '0'
+    iq_balance_mode21: '0'
+    iq_balance_mode22: '0'
+    iq_balance_mode23: '0'
+    iq_balance_mode24: '0'
+    iq_balance_mode25: '0'
+    iq_balance_mode26: '0'
+    iq_balance_mode27: '0'
+    iq_balance_mode28: '0'
+    iq_balance_mode29: '0'
+    iq_balance_mode3: '0'
+    iq_balance_mode30: '0'
+    iq_balance_mode31: '0'
+    iq_balance_mode4: '0'
+    iq_balance_mode5: '0'
+    iq_balance_mode6: '0'
+    iq_balance_mode7: '0'
+    iq_balance_mode8: '0'
+    iq_balance_mode9: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
@@ -435,88 +620,65 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 220.0]
+    coordinate: [192, 332.0]
     rotation: 0
     state: enabled
-- name: qtgui_freq_sink_x_0
-  id: qtgui_freq_sink_x
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
   parameters:
     affinity: ''
     alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    average: '1.0'
-    axislabels: 'True'
     bw: samp_rate
-    color1: '"blue"'
-    color10: '"dark blue"'
-    color2: '"red"'
-    color3: '"green"'
-    color4: '"black"'
-    color5: '"cyan"'
-    color6: '"magenta"'
-    color7: '"yellow"'
-    color8: '"dark red"'
-    color9: '"dark green"'
     comment: ''
-    ctrlpanel: 'False'
     fc: '0'
     fftsize: '1024'
-    freqhalf: 'True'
-    grid: 'False'
     gui_hint: ''
-    label: Relative Gain
-    label1: ''
-    label10: ''''''
-    label2: ''''''
-    label3: ''''''
-    label4: ''''''
-    label5: ''''''
-    label6: ''''''
-    label7: ''''''
-    label8: ''''''
-    label9: ''''''
-    legend: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: '""'
-    nconnections: '1'
-    norm_window: 'False'
+    name: '"Raw"'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
     showports: 'False'
-    tr_chan: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_tag: '""'
+    showrf: 'False'
     type: complex
-    units: dB
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
     wintype: window.WIN_BLACKMAN_hARRIS
-    ymax: '10'
-    ymin: '-140'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 140.0]
+    coordinate: [240, 156.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_sink_x_0_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate/32
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"Filtered"'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: window.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 156.0]
     rotation: 0
     state: enabled
 - name: rational_resampler_xxx_0
@@ -525,9 +687,9 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    decim: '2'
+    decim: '16'
     fbw: '0'
-    interp: '1000'
+    interp: '12'
     maxoutbuf: '0'
     minoutbuf: '0'
     taps: '[]'
@@ -536,17 +698,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [840, 268.0]
+    coordinate: [672, 396.0]
     rotation: 0
     state: enabled
 
 connections:
-- [analog_nbfm_tx_0, '0', rational_resampler_xxx_0, '0']
-- [blocks_multiply_const_vxx_0, '0', low_pass_filter_0, '0']
-- [blocks_wavfile_source_0, '0', blocks_multiply_const_vxx_0, '0']
-- [low_pass_filter_0, '0', analog_nbfm_tx_0, '0']
-- [rational_resampler_xxx_0, '0', osmosdr_sink_0, '0']
-- [rational_resampler_xxx_0, '0', qtgui_freq_sink_x_0, '0']
+- [analog_agc3_xx_0, '0', analog_am_demod_cf_0, '0']
+- [analog_am_demod_cf_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_multiply_const_vxx_0, '0', audio_sink_0, '0']
+- [low_pass_filter_0, '0', qtgui_sink_x_0_0, '0']
+- [low_pass_filter_0, '0', rational_resampler_xxx_0, '0']
+- [osmosdr_source_0, '0', low_pass_filter_0, '0']
+- [osmosdr_source_0, '0', qtgui_sink_x_0, '0']
+- [rational_resampler_xxx_0, '0', analog_agc3_xx_0, '0']
 
 metadata:
   file_format: 1
